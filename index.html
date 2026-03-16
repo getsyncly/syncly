@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Syncly | Final Fixed Mode</title>
+    <style>
+        :root { --p: #1DB954; --bg: #0b0b0b; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
+        .main { display: flex; height: 100vh; }
+        .player-side { flex: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border-right: 1px solid #222; }
+        .chat-side { flex: 1; background: #121212; display: flex; flex-direction: column; }
+        .input-box { width: 90%; display: flex; gap: 10px; margin-bottom: 20px; }
+        input { background: #1e1e1e; border: 1px solid #333; padding: 12px; color: white; border-radius: 8px; flex: 1; outline: none; }
+        .btn { background: var(--p); border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; color: black; }
+        .video-box { width: 95%; aspect-ratio: 16/9; background: #000; border-radius: 15px; border: 1px solid #333; overflow: hidden; }
+        #player { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+<div class="main">
+    <div class="player-side">
+        <div class="input-box">
+            <input type="text" id="query" placeholder="Type Name (Seedhe Maut) or Paste Link...">
+            <button class="btn" onclick="playEngine()">VIBE</button>
+        </div>
+        <div class="video-box">
+            <iframe id="player" src="https://www.youtube.com/embed/jOTfBlKSQ84?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+        <p id="st" style="color: var(--p); margin-top: 15px;">System: Ready</p>
+    </div>
+
+    <div class="chat-side">
+        <div style="padding:15px; border-bottom:1px solid #222; color: var(--p); font-weight: bold;">Syncly Chat</div>
+        <div id="chats" style="flex:1; padding:15px; overflow-y:auto; font-size:14px;"></div>
+        <div style="padding:15px; display:flex; gap:5px; border-top:1px solid #222;">
+            <input type="text" id="cm" placeholder="Say hi...">
+            <button class="btn" style="padding:10px;" onclick="send()">></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function playEngine() {
+        let val = document.getElementById('query').value.trim();
+        let frame = document.getElementById('player');
+        let status = document.getElementById('st');
+        if(!val) return;
+
+        let videoId = "";
+        // Check for Link
+        if(val.includes("v=")) videoId = val.split("v=")[1].split("&")[0];
+        else if(val.includes("youtu.be/")) videoId = val.split("/").pop().split("?")[0];
+
+        if(videoId) {
+            // Direct Link Mode
+            frame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+            status.innerText = "Status: Playing Link";
+        } else {
+            // Search Mode Bypass
+            // Localhost par yahi ek tarika hai bina API key ke search chalane ka
+            frame.src = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(val)}&autoplay=1`;
+            status.innerText = "Status: Searching '" + val + "'";
+        }
+        document.getElementById('query').value = "";
+    }
+
+    function send() {
+        let i = document.getElementById('cm');
+        if(i.value) {
+            document.getElementById('chats').innerHTML += `<div style="margin-bottom:8px;"><b>You:</b> ${i.value}</div>`;
+            i.value = "";
+            document.getElementById('chats').scrollTop = document.getElementById('chats').scrollHeight;
+        }
+    }
+</script>
+</body>
+</html>
