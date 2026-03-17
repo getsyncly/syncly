@@ -2,9 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Syncly | Premium Classic</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syncly | Synchronized Music Experience</title>
+    <meta name="description" content="Syncly lets you listen to music and watch videos with friends in perfect sync.">
+    
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
+    
     <style>
         :root { 
             --p: #1DB954; 
@@ -14,50 +18,59 @@
             --ease: cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; }
-        .glow { position: fixed; width: 400px; height: 400px; background: var(--p); filter: blur(150px); opacity: 0.1; z-index: -1; top: -100px; right: -100px; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Inter', -apple-system, sans-serif; height: 100vh; overflow: hidden; }
+        
+        /* Glass Glow Background */
+        .glow { position: fixed; width: 500px; height: 500px; background: var(--p); filter: blur(180px); opacity: 0.07; z-index: -1; top: -150px; right: -150px; }
 
         /* ENTRANCE PAGE */
-        #entry-page { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; transition: 0.8s var(--ease); }
-        .hero-title { font-size: 80px; font-weight: 900; letter-spacing: -4px; background: linear-gradient(to bottom, #fff, #444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; }
-        .entry-card { background: var(--glass); backdrop-filter: blur(20px); padding: 40px; border-radius: 32px; border: 1px solid var(--glass-border); width: 380px; text-align: center; }
+        #entry-page { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; transition: 1s var(--ease); }
+        .hero-title { font-size: 90px; font-weight: 900; letter-spacing: -5px; color: white; margin: 0; }
+        .hero-title span { color: var(--p); }
+        
+        .entry-card { background: var(--glass); backdrop-filter: blur(25px); padding: 50px; border-radius: 40px; border: 1px solid var(--glass-border); width: 400px; text-align: center; box-shadow: 0 40px 100px rgba(0,0,0,0.8); }
 
-        .aesthetic-input { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 16px 20px; color: white; border-radius: 16px; outline: none; width: -webkit-fill-available; margin-bottom: 12px; font-size: 16px; text-align: center; }
-        .aesthetic-input:focus { border-color: var(--p); }
+        .aesthetic-input { background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); padding: 18px 24px; color: white; border-radius: 20px; outline: none; width: -webkit-fill-available; margin-bottom: 15px; font-size: 16px; text-align: center; transition: 0.3s; }
+        .aesthetic-input:focus { border-color: var(--p); background: rgba(0,0,0,0.6); }
 
-        .btn { border: none; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer; transition: 0.3s var(--ease); width: 100%; text-transform: uppercase; letter-spacing: 1px; }
-        .primary-btn { background: var(--p); color: black; }
-        .secondary-btn { background: transparent; border: 1px solid var(--glass-border); color: white; margin-top: 10px; }
+        .btn { border: none; padding: 18px; border-radius: 20px; font-weight: 800; cursor: pointer; transition: 0.4s var(--ease); width: 100%; text-transform: uppercase; letter-spacing: 2px; font-size: 14px; }
+        .primary-btn { background: var(--p); color: black; box-shadow: 0 10px 30px rgba(29, 185, 84, 0.2); }
+        .primary-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(29, 185, 84, 0.4); }
+        .secondary-btn { background: transparent; border: 1px solid var(--glass-border); color: white; margin-top: 15px; }
+        .secondary-btn:hover { background: var(--glass-border); }
 
-        /* MAIN APP - FIXED SIDE-BY-SIDE */
-        #main-app { display: none; height: 100vh; grid-template-columns: 1fr 350px; opacity: 0; transition: 1s ease; }
-        .player-side { padding: 30px; display: flex; flex-direction: column; gap: 20px; }
-        .chat-side { background: rgba(255,255,255,0.01); border-left: 1px solid var(--glass-border); display: flex; flex-direction: column; backdrop-filter: blur(10px); }
+        /* MAIN INTERFACE */
+        #main-app { display: none; height: 100vh; grid-template-columns: 1fr 380px; opacity: 0; transition: 1.5s ease; }
+        .player-side { padding: 40px; display: flex; flex-direction: column; gap: 25px; }
+        .chat-side { background: rgba(0,0,0,0.4); border-left: 1px solid var(--glass-border); display: flex; flex-direction: column; backdrop-filter: blur(20px); }
 
-        .video-container { flex: 1; position: relative; border-radius: 24px; overflow: hidden; border: 1px solid var(--glass-border); background: #000; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+        .video-container { flex: 1; position: relative; border-radius: 30px; overflow: hidden; border: 1px solid var(--glass-border); background: #000; box-shadow: 0 50px 100px -20px rgba(0,0,0,0.8); }
         #player { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
 
-        #messages { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        .msg { padding: 12px 16px; border-radius: 18px; font-size: 14px; max-width: 80%; line-height: 1.5; }
-        .other-msg { background: var(--glass); border: 1px solid var(--glass-border); align-self: flex-start; }
-        .my-msg { background: var(--p); color: black; align-self: flex-end; border-radius: 18px 18px 4px 18px; }
-        .system-msg { font-size: 11px; color: #666; align-self: center; text-transform: uppercase; letter-spacing: 1px; }
+        /* CHAT BUBBLES */
+        #messages { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .msg { padding: 14px 20px; border-radius: 22px; font-size: 14px; max-width: 80%; line-height: 1.6; animation: fadeIn 0.3s ease; }
+        .other-msg { background: var(--glass); border: 1px solid var(--glass-border); align-self: flex-start; border-bottom-left-radius: 5px; }
+        .my-msg { background: var(--p); color: black; align-self: flex-end; border-bottom-right-radius: 5px; font-weight: 600; }
+        
+        @keyframes fadeIn { from { opacity:0; transform: translateY(5px); } to { opacity:1; transform: translateY(0); } }
 
-        #room-id-badge { background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 40px; border: 1px solid var(--glass-border); font-size: 12px; font-weight: 700; color: var(--p); cursor: pointer; }
+        #room-id-badge { background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 50px; border: 1px solid var(--glass-border); font-size: 12px; font-weight: 800; color: var(--p); cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
     <div class="glow"></div>
     <div id="entry-page">
-        <h1 class="hero-title">Syncly</h1>
+        <h1 class="hero-title">Syncly<span>.</span></h1>
+        <p style="color: #666; font-weight: 500; margin-bottom: 40px; letter-spacing: 1px;">THE PREMIUM SYNC EXPERIENCE</p>
         <div class="entry-card">
-            <input type="text" id="user-name" placeholder="Who are you?" class="aesthetic-input">
-            <div style="margin-top: 20px;">
-                <button class="btn primary-btn" onclick="initPeer(true)">Create New Vibe</button>
-                <div style="margin: 20px; font-size: 10px; color: #444; font-weight: 800; letter-spacing: 2px;">OR</div>
-                <input type="text" id="join-input" placeholder="Paste Room ID" class="aesthetic-input">
-                <button class="btn secondary-btn" onclick="initPeer(false)">Join Room</button>
+            <input type="text" id="user-name" placeholder="YOUR NICKNAME" class="aesthetic-input">
+            <div style="margin-top: 10px;">
+                <button class="btn primary-btn" onclick="initPeer(true)">CREATE LOUNGE</button>
+                <div style="margin: 25px 0; font-size: 11px; color: #333; font-weight: 900; letter-spacing: 3px;">OR JOIN EXISTING</div>
+                <input type="text" id="join-input" placeholder="LOUNGE ID" class="aesthetic-input">
+                <button class="btn secondary-btn" onclick="initPeer(false)">ENTER ROOM</button>
             </div>
         </div>
     </div>
@@ -65,13 +78,13 @@
     <div id="main-app">
         <div class="player-side">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="font-size: 24px; font-weight: 900;">Syncly<span style="color:var(--p);">.</span></div>
-                <div id="room-id-badge" onclick="copyId()">ID: Connecting...</div>
+                <div style="font-size: 28px; font-weight: 900; letter-spacing: -1.5px;">Syncly<span style="color:var(--p);">.</span></div>
+                <div id="room-id-badge" onclick="copyId()">ID: LOADING...</div>
             </div>
             
-            <div style="display:flex; gap:10px; background:var(--glass); padding:8px; border-radius:20px; border:1px solid var(--glass-border);">
-                <input type="text" id="search-input" placeholder="Search track or paste link..." class="aesthetic-input" style="margin:0; border:none; background:transparent; text-align: left;">
-                <button class="btn primary-btn" style="width:100px; padding:12px;" onclick="handlePlay(true)">PLAY</button>
+            <div style="display:flex; gap:12px; background:var(--glass); padding:10px; border-radius:25px; border:1px solid var(--glass-border);">
+                <input type="text" id="search-input" placeholder="Search track or paste YouTube URL..." class="aesthetic-input" style="margin:0; border:none; background:transparent; text-align: left; font-size: 14px;">
+                <button class="btn primary-btn" style="width:120px; padding:15px; border-radius: 18px;" onclick="handlePlay(true)">PLAY</button>
             </div>
 
             <div class="video-container">
@@ -80,16 +93,16 @@
         </div>
 
         <div class="chat-side">
-            <div style="padding:25px; border-bottom:1px solid var(--glass-border); font-size: 11px; font-weight: 900; letter-spacing: 2px; color: #555;">LIVE CHAT</div>
+            <div style="padding:30px; border-bottom:1px solid var(--glass-border); font-size: 12px; font-weight: 900; letter-spacing: 3px; color: #444;">LIVE LOUNGE</div>
             <div id="messages"></div>
-            <div style="padding:20px; border-top:1px solid var(--glass-border);">
-                <input type="text" id="chat-input" placeholder="Message..." class="aesthetic-input" style="margin:0; text-align:left; border-radius: 25px;" onkeypress="if(event.key==='Enter') sendChat()">
+            <div style="padding:25px; border-top:1px solid var(--glass-border);">
+                <input type="text" id="chat-input" placeholder="Send a message..." class="aesthetic-input" style="margin:0; text-align:left; border-radius: 25px; background: rgba(255,255,255,0.02);" onkeypress="if(event.key==='Enter') sendChat()">
             </div>
         </div>
     </div>
 
     <script>
-        const API_KEY = 'YOUR_API_KEY_HERE'; 
+        const API_KEY = 'AIzaSyAaCRqzXizB5wt8iFc7O-yfFvherdJi_-I'; 
         let peer, connections = [], player, isHost = false, myName = "", ignoreNext = false;
 
         function onYouTubeIframeAPIReady() {
@@ -110,7 +123,7 @@
 
         function initPeer(hostMode) {
             myName = document.getElementById('user-name').value.trim();
-            if(!myName) return alert("Pehle naam batao!");
+            if(!myName) return alert("Nickname is required.");
             isHost = hostMode;
             const rid = isHost ? Math.random().toString(36).substring(2, 7) : null;
             peer = new Peer(rid);
@@ -135,13 +148,14 @@
                     if(isHost) broadcast(data, conn);
                 }
             });
-            conn.on('open', () => conn.send({type: 'chat', user: 'System', val: myName + " joined!"}));
+            conn.on('open', () => conn.send({type: 'chat', user: 'System', val: myName + " entered the lounge."}));
         }
 
         function broadcast(d, exc) { connections.forEach(c => { if(c.open && c !== exc) c.send(d); }); }
 
         function showApp() {
-            document.getElementById('entry-page').style.transform = "translateY(-100%)";
+            document.getElementById('entry-page').style.transform = "scale(1.1)";
+            document.getElementById('entry-page').style.opacity = "0";
             setTimeout(() => {
                 document.getElementById('entry-page').style.display = "none";
                 document.getElementById('main-app').style.display = "grid";
@@ -179,14 +193,17 @@
 
         function addMsg(u, t) {
             let b = document.getElementById('messages');
-            let cls = u === "System" ? "system-msg" : (u === "You" ? "my-msg" : "other-msg");
-            let nameCol = (u === "You") ? "black" : "var(--p)";
-            let label = (u === "System") ? `Syncly` : `<b style="color:${nameCol}; font-size:11px;">${u}</b>`;
-            b.innerHTML += `<div class="msg ${cls}">${u === "You" || u === "System" ? t : label+"<br>"+t}</div>`;
+            let cls = u === "You" ? "my-msg" : "other-msg";
+            let label = (u === "You" || u === "System") ? "" : `<b style="color:var(--p); font-size:11px; text-transform:uppercase;">${u}</b><br>`;
+            b.innerHTML += `<div class="msg ${cls}">${label}${t}</div>`;
             b.scrollTop = b.scrollHeight;
         }
 
-        function copyId() { navigator.clipboard.writeText(document.getElementById('room-id-badge').innerText.split(': ')[1]); alert("Room ID Copied!"); }
+        function copyId() { 
+            let id = document.getElementById('room-id-badge').innerText.split(': ')[1];
+            navigator.clipboard.writeText(id); 
+            alert("Lounge ID Copied!"); 
+        }
     </script>
 </body>
 </html>
