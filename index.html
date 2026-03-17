@@ -15,47 +15,33 @@
         }
         
         body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Inter', system-ui, sans-serif; height: 100vh; overflow: hidden; }
-
-        /* Background Glow Effect */
         .glow { position: fixed; width: 400px; height: 400px; background: var(--p); filter: blur(150px); opacity: 0.1; border-radius: 50%; z-index: -1; top: -100px; right: -100px; }
 
-        /* -------------------------- */
-        /* 1. ENTRANCE PAGE (Ultra-Slick) */
-        /* -------------------------- */
         #entry-page { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; transition: 0.8s var(--ease); }
         .hero-title { font-size: 80px; font-weight: 900; letter-spacing: -4px; background: linear-gradient(to bottom, #fff, #444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; }
-        
-        .entry-card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 40px; border-radius: 32px; border: 1px solid var(--glass-border); width: 380px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); transform: scale(1); transition: 0.5s var(--ease); }
-        .entry-card:hover { border-color: rgba(29, 185, 84, 0.3); }
+        .entry-card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 40px; border-radius: 32px; border: 1px solid var(--glass-border); width: 380px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
 
         .aesthetic-input { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 16px 20px; color: white; border-radius: 16px; outline: none; width: -webkit-fill-available; margin-bottom: 12px; font-size: 16px; transition: 0.3s; text-align: center; }
-        .aesthetic-input:focus { border-color: var(--p); background: rgba(0,0,0,0.5); }
+        .aesthetic-input:focus { border-color: var(--p); }
 
         .btn { border: none; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer; transition: 0.3s var(--ease); width: 100%; text-transform: uppercase; letter-spacing: 1px; }
-        .primary-btn { background: var(--p); color: black; box-shadow: 0 0 20px rgba(29, 185, 84, 0.2); }
-        .primary-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(29, 185, 84, 0.4); }
+        .primary-btn { background: var(--p); color: black; }
         .secondary-btn { background: transparent; border: 1px solid var(--glass-border); color: white; margin-top: 10px; }
-        .secondary-btn:hover { background: var(--glass-border); }
 
-        /* -------------------------- */
-        /* 2. MAIN APP UI */
-        /* -------------------------- */
         #main-app { display: none; height: 100vh; grid-template-columns: 1fr 350px; opacity: 0; transition: 1s ease; }
         .player-side { padding: 30px; display: flex; flex-direction: column; gap: 20px; }
         .chat-side { background: rgba(255,255,255,0.01); border-left: 1px solid var(--glass-border); display: flex; flex-direction: column; backdrop-filter: blur(10px); }
 
-        .video-container { flex: 1; position: relative; border-radius: 24px; overflow: hidden; border: 1px solid var(--glass-border); box-shadow: 0 30px 60px -12px rgba(0,0,0,0.7); background: #000; }
+        .video-container { flex: 1; position: relative; border-radius: 24px; overflow: hidden; border: 1px solid var(--glass-border); background: #000; }
         #main-player { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
 
-        .search-container { display: flex; gap: 12px; background: var(--glass); padding: 8px; border-radius: 20px; border: 1px solid var(--glass-border); }
-        
         #messages { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
         .msg { padding: 12px 16px; border-radius: 18px; font-size: 14px; max-width: 80%; line-height: 1.5; animation: msgIn 0.4s var(--ease); }
         @keyframes msgIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .other-msg { background: var(--glass); border: 1px solid var(--glass-border); align-self: flex-start; }
         .my-msg { background: var(--p); color: black; align-self: flex-end; border-radius: 18px 18px 4px 18px; font-weight: 500; }
-        .system-msg { font-size: 12px; color: #666; align-self: center; text-transform: uppercase; letter-spacing: 1px; }
+        .system-msg { font-size: 11px; color: #666; align-self: center; text-transform: uppercase; letter-spacing: 1px; font-style: normal; border: none; background: none; }
 
         #room-id-badge { background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 40px; border: 1px solid var(--glass-border); font-size: 12px; font-weight: 700; color: var(--p); cursor: pointer; }
     </style>
@@ -63,15 +49,13 @@
 <body>
 
     <div class="glow"></div>
-
     <div id="entry-page">
         <h1 class="hero-title">Syncly</h1>
-        <p style="color: #666; margin-bottom: 40px; font-weight: 500;">Your music. Your squad. Synchronized.</p>
         <div class="entry-card">
             <input type="text" id="user-name" placeholder="Who are you?" class="aesthetic-input">
             <div style="margin-top: 20px;">
                 <button class="btn primary-btn" onclick="initPeer(true)">Create New Vibe</button>
-                <div style="margin: 20px; font-size: 12px; color: #444; font-weight: 800; letter-spacing: 2px;">OR</div>
+                <div style="margin: 20px; font-size: 10px; color: #444; font-weight: 800; letter-spacing: 2px;">OR</div>
                 <input type="text" id="join-input" placeholder="Paste Room ID" class="aesthetic-input">
                 <button class="btn secondary-btn" onclick="initPeer(false)">Join Room</button>
             </div>
@@ -81,22 +65,19 @@
     <div id="main-app">
         <div class="player-side">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="font-size: 24px; font-weight: 900; letter-spacing: -1px;">Syncly<span style="color:var(--p);">.</span></div>
+                <div style="font-size: 24px; font-weight: 900;">Syncly<span style="color:var(--p);">.</span></div>
                 <div id="room-id-badge" onclick="copyId()">ID: Connecting...</div>
             </div>
-            
-            <div class="search-container">
-                <input type="text" id="search-input" placeholder="Search track or paste YouTube link..." class="aesthetic-input" style="margin:0; border:none; background:transparent; text-align: left;">
+            <div style="display:flex; gap:10px; background:var(--glass); padding:8px; border-radius:20px; border:1px solid var(--glass-border);">
+                <input type="text" id="search-input" placeholder="Search song or paste YouTube link..." class="aesthetic-input" style="margin:0; border:none; background:transparent; text-align: left;">
                 <button class="btn primary-btn" style="width:100px; padding:12px;" onclick="handlePlay(true)">PLAY</button>
             </div>
-
             <div class="video-container">
                 <iframe id="main-player" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
         </div>
-
         <div class="chat-side">
-            <div style="padding:25px; border-bottom:1px solid var(--glass-border); font-size: 12px; font-weight: 900; letter-spacing: 2px; color: #555;">LIVE CHAT</div>
+            <div style="padding:25px; border-bottom:1px solid var(--glass-border); font-size: 11px; font-weight: 900; letter-spacing: 2px; color: #555;">LIVE CHAT</div>
             <div id="messages"></div>
             <div style="padding:20px; border-top:1px solid var(--glass-border);">
                 <input type="text" id="chat-input" placeholder="Message..." class="aesthetic-input" style="margin:0; text-align:left;" onkeypress="if(event.key==='Enter') sendChat()">
@@ -105,28 +86,22 @@
     </div>
 
     <script>
-        const API_KEY = 'AIzaSyAaCRqzXizB5wt8iFc7O-yfFvherdJi_-I'; // <--- APNI KEY DALO BHAI
+        const API_KEY = 'AIzaSyAaCRqzXizB5wt8iFc7O-yfFvherdJi_-I'; // <--- BHAI KEY DAAL DENA
         let peer, connections = [];
         let isHost = false, myName = "";
 
         function initPeer(hostMode) {
             myName = document.getElementById('user-name').value.trim();
-            if(!myName) return alert("Pehle naam toh batao!");
-            
+            if(!myName) return alert("Nickname zaroori hai bhai!");
             isHost = hostMode;
             const shortId = isHost ? Math.random().toString(36).substring(2, 7) : null;
             peer = new Peer(shortId);
-
             peer.on('open', (id) => {
                 document.getElementById('room-id-badge').innerText = "ROOM ID: " + id;
                 if(!isHost) connectToHost(document.getElementById('join-input').value.trim());
                 showApp();
             });
-
-            peer.on('connection', (conn) => {
-                connections.push(conn);
-                setupListeners(conn);
-            });
+            peer.on('connection', (conn) => { connections.push(conn); setupListeners(conn); });
         }
 
         function connectToHost(id) {
@@ -137,7 +112,7 @@
 
         function setupListeners(conn) {
             conn.on('open', () => {
-                addMsg("System", "New person joined the vibe!");
+                addMsg("System", "Sync Connected!");
                 conn.send({type: 'system', val: myName + " joined!"});
             });
             conn.on('data', (data) => {
@@ -150,13 +125,11 @@
         function broadcast(data, exclude) { connections.forEach(c => { if(c.open && c !== exclude) c.send(data); }); }
 
         function showApp() {
-            const ep = document.getElementById('entry-page');
-            const ma = document.getElementById('main-app');
-            ep.style.transform = "translateY(-100%)";
+            document.getElementById('entry-page').style.transform = "translateY(-100%)";
             setTimeout(() => {
-                ep.style.display = "none";
-                ma.style.display = "grid";
-                setTimeout(() => ma.style.opacity = "1", 50);
+                document.getElementById('entry-page').style.display = "none";
+                document.getElementById('main-app').style.display = "grid";
+                setTimeout(() => document.getElementById('main-app').style.opacity = "1", 50);
             }, 800);
         }
 
@@ -193,7 +166,12 @@
         function addMsg(u, t) {
             let b = document.getElementById('messages');
             let cls = u === "System" ? "system-msg" : (u === "You" ? "my-msg" : "other-msg");
-            let content = u === "You" || u === "System" ? t : `<b>${u}</b><br>${t}`;
+            
+            // Friend's name in Green, My name in Black (on Green bubble)
+            let nameColor = (u === "You") ? "black" : "var(--p)";
+            let label = (u === "System") ? `<i>Syncly Bot</i>` : `<b style="color:${nameColor}; font-size:12px;">${u}</b>`;
+            
+            let content = u === "You" || u === "System" ? t : `${label}<br>${t}`;
             b.innerHTML += `<div class="msg ${cls}">${content}</div>`;
             b.scrollTop = b.scrollHeight;
         }
@@ -201,7 +179,7 @@
         function copyId() {
             let id = document.getElementById('room-id-badge').innerText.split(': ')[1];
             navigator.clipboard.writeText(id);
-            alert("ID Copied: " + id);
+            alert("Room ID Copied!");
         }
     </script>
 </body>
