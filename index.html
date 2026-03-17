@@ -3,93 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Syncly | Vibe Together</title>
+    <title>Syncly | Premium Vibe</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root { 
-            --p: #1DB954; /* Spotify Green */
-            --bg: #090909; /* Near-black background */
-            --panel: #141414; /* Slightly lighter black panel */
-            --brd: #222; /* Minimal border color */
-            --text-p: #fff; /* Primary text */
-            --text-s: #aaa; /* Secondary text */
-            --ease: cubic-bezier(0.23, 1, 0.32, 1); /* Custom ease-out curve */
+            --p: #1DB954; 
+            --bg: #050505; 
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text-p); font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif; height: 100vh; overflow: hidden; -webkit-font-smoothing: antialiased; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Inter', system-ui, sans-serif; height: 100vh; overflow: hidden; }
+
+        /* Background Glow Effect */
+        .glow { position: fixed; width: 400px; height: 400px; background: var(--p); filter: blur(150px); opacity: 0.1; border-radius: 50%; z-index: -1; top: -100px; right: -100px; }
 
         /* -------------------------- */
-        /* 1. ENTRANCE PAGE (Aesthetic) */
+        /* 1. ENTRANCE PAGE (Ultra-Slick) */
         /* -------------------------- */
-        #entry-page { position: fixed; inset: 0; background: rgba(9, 9, 9, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; transition: opacity 0.5s var(--ease); }
-        .hero-section { text-align: center; margin-bottom: 40px; }
-        .hero-title { font-size: 64px; font-weight: 800; color: var(--p); letter-spacing: -2px; margin: 0; }
-        .hero-subtitle { font-size: 18px; color: var(--text-s); margin-top: 10px; font-weight: 400; }
+        #entry-page { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; transition: 0.8s var(--ease); }
+        .hero-title { font-size: 80px; font-weight: 900; letter-spacing: -4px; background: linear-gradient(to bottom, #fff, #444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; }
         
-        .entry-card { background: var(--panel); padding: 40px; border-radius: 24px; border: 1px solid var(--brd); width: 360px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); animation: slideIn 0.6s var(--ease); }
-        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .entry-card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 40px; border-radius: 32px; border: 1px solid var(--glass-border); width: 380px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); transform: scale(1); transition: 0.5s var(--ease); }
+        .entry-card:hover { border-color: rgba(29, 185, 84, 0.3); }
 
-        /* General Input Style */
-        .aesthetic-input { background: rgba(255,255,255,0.03); border: 1px solid var(--brd); padding: 14px 18px; color: var(--text-p); border-radius: 12px; outline: none; width: -webkit-fill-available; margin-bottom: 12px; font-size: 15px; transition: 0.2s ease; }
-        .aesthetic-input:focus { border-color: var(--p); box-shadow: 0 0 10px rgba(29, 185, 84, 0.2); }
-        .aesthetic-input::placeholder { color: rgba(255,255,255,0.3); }
+        .aesthetic-input { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 16px 20px; color: white; border-radius: 16px; outline: none; width: -webkit-fill-available; margin-bottom: 12px; font-size: 16px; transition: 0.3s; text-align: center; }
+        .aesthetic-input:focus { border-color: var(--p); background: rgba(0,0,0,0.5); }
 
-        /* Buttons */
-        .aesthetic-btn { border: none; padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.2s var(--ease); width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        .primary-btn { background: var(--p); color: black; }
-        .primary-btn:hover { background: #1ed760; transform: translateY(-2px); }
-        .secondary-btn { background: var(--brd); color: var(--text-p); }
-        .secondary-btn:hover { background: #333; }
-
-        /* Divider */
-        .divider { display: flex; align-items: center; margin: 25px 0; color: #444; font-size: 12px; }
-        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #222; }
-        .divider-text { margin: 0 15px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .btn { border: none; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer; transition: 0.3s var(--ease); width: 100%; text-transform: uppercase; letter-spacing: 1px; }
+        .primary-btn { background: var(--p); color: black; box-shadow: 0 0 20px rgba(29, 185, 84, 0.2); }
+        .primary-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(29, 185, 84, 0.4); }
+        .secondary-btn { background: transparent; border: 1px solid var(--glass-border); color: white; margin-top: 10px; }
+        .secondary-btn:hover { background: var(--glass-border); }
 
         /* -------------------------- */
-        /* 2. MAIN APP UI (Aesthetic) */
+        /* 2. MAIN APP UI */
         /* -------------------------- */
-        #main-app { display: none; height: 100vh; grid-template-columns: 3fr minmax(300px, 1fr); gap: 0; }
-        .player-side { padding: 30px; display: flex; flex-direction: column; gap: 20px; border-right: 1px solid var(--brd); background: #0b0b0b; }
-        .chat-side { background: var(--panel); display: flex; flex-direction: column; }
+        #main-app { display: none; height: 100vh; grid-template-columns: 1fr 350px; opacity: 0; transition: 1s ease; }
+        .player-side { padding: 30px; display: flex; flex-direction: column; gap: 20px; }
+        .chat-side { background: rgba(255,255,255,0.01); border-left: 1px solid var(--glass-border); display: flex; flex-direction: column; backdrop-filter: blur(10px); }
 
-        /* Full Size Video with Shadow */
-        .video-container { flex: 1; width: 100%; position: relative; background: #000; border-radius: 16px; overflow: hidden; border: 1px solid var(--brd); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        #main-player { position: absolute; top:0; left:0; width: 100%; height: 100%; border: none; }
+        .video-container { flex: 1; position: relative; border-radius: 24px; overflow: hidden; border: 1px solid var(--glass-border); box-shadow: 0 30px 60px -12px rgba(0,0,0,0.7); background: #000; }
+        #main-player { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
 
-        /* Chat Message Aesthetic */
-        #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
-        .msg { background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 12px; font-size: 14px; align-self: flex-start; max-width: 85%; animation: msgPop 0.3s var(--ease); border: 1px solid transparent; }
-        .msg:hover { background: rgba(255,255,255,0.06); border-color: var(--brd); }
-        @keyframes msgPop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .search-container { display: flex; gap: 12px; background: var(--glass); padding: 8px; border-radius: 20px; border: 1px solid var(--glass-border); }
+        
+        #messages { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .msg { padding: 12px 16px; border-radius: 18px; font-size: 14px; max-width: 80%; line-height: 1.5; animation: msgIn 0.4s var(--ease); }
+        @keyframes msgIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .other-msg { background: var(--glass); border: 1px solid var(--glass-border); align-self: flex-start; }
+        .my-msg { background: var(--p); color: black; align-self: flex-end; border-radius: 18px 18px 4px 18px; font-weight: 500; }
+        .system-msg { font-size: 12px; color: #666; align-self: center; text-transform: uppercase; letter-spacing: 1px; }
 
-        .msg b { color: var(--p); margin-right: 5px; font-weight: 700; }
-        .system-msg { background: none; padding: 5px 14px; border: none; border-left: 3px solid var(--p); font-size: 12px; color: var(--text-s); font-weight: 500; font-style: italic; }
-        .you-msg { align-self: flex-end; background: var(--p); color: black; border-radius: 12px 12px 2px 12px; }
-        .you-msg b { color: black; }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #444; }
+        #room-id-badge { background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 40px; border: 1px solid var(--glass-border); font-size: 12px; font-weight: 700; color: var(--p); cursor: pointer; }
     </style>
 </head>
 <body>
 
+    <div class="glow"></div>
+
     <div id="entry-page">
-        <div class="hero-section">
-            <h1 class="hero-title">Syncly</h1>
-            <p class="hero-subtitle">Vibe together. Sync the night.</p>
-        </div>
+        <h1 class="hero-title">Syncly</h1>
+        <p style="color: #666; margin-bottom: 40px; font-weight: 500;">Your music. Your squad. Synchronized.</p>
         <div class="entry-card">
-            <input type="text" id="user-name" placeholder="Enter Nickname" class="aesthetic-input" style="font-weight:700; text-align:center;">
-            
-            <div style="margin-top: 30px;">
-                <button class="aesthetic-btn primary-btn" onclick="initPeer(true)">CREATE NEW ROOM</button>
-                <div class="divider"><span class="divider-text">OR</span></div>
-                <input type="text" id="join-input" placeholder="Paste Short Room ID" class="aesthetic-input">
-                <button class="aesthetic-btn secondary-btn" onclick="initPeer(false)">JOIN ROOM</button>
+            <input type="text" id="user-name" placeholder="Who are you?" class="aesthetic-input">
+            <div style="margin-top: 20px;">
+                <button class="btn primary-btn" onclick="initPeer(true)">Create New Vibe</button>
+                <div style="margin: 20px; font-size: 12px; color: #444; font-weight: 800; letter-spacing: 2px;">OR</div>
+                <input type="text" id="join-input" placeholder="Paste Room ID" class="aesthetic-input">
+                <button class="btn secondary-btn" onclick="initPeer(false)">Join Room</button>
             </div>
         </div>
     </div>
@@ -97,13 +81,13 @@
     <div id="main-app">
         <div class="player-side">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h2 style="color:var(--p); margin:0; font-weight:800; letter-spacing: -1px; font-size:24px;">Syncly</h2>
-                <div id="room-id-tag" style="background:var(--p); color:black; padding:6px 16px; border-radius:30px; font-weight:bold; font-size:12px; text-transform: uppercase; letter-spacing: 1px;">ID: ...</div>
+                <div style="font-size: 24px; font-weight: 900; letter-spacing: -1px;">Syncly<span style="color:var(--p);">.</span></div>
+                <div id="room-id-badge" onclick="copyId()">ID: Connecting...</div>
             </div>
             
-            <div style="display:flex; gap:10px; background: rgba(255,255,255,0.02); padding: 5px; border-radius: 14px; border: 1px solid var(--brd);">
-                <input type="text" id="search-input" placeholder="Search song or paste link..." class="aesthetic-input" style="margin:0; border: none; background: transparent;">
-                <button class="aesthetic-btn primary-btn" style="width:100px; margin:0;" onclick="handlePlay(true)">PLAY</button>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search track or paste YouTube link..." class="aesthetic-input" style="margin:0; border:none; background:transparent; text-align: left;">
+                <button class="btn primary-btn" style="width:100px; padding:12px;" onclick="handlePlay(true)">PLAY</button>
             </div>
 
             <div class="video-container">
@@ -112,36 +96,30 @@
         </div>
 
         <div class="chat-side">
-            <div style="padding:20px 25px; border-bottom:1px solid var(--brd); font-weight:700; color:var(--text-p); text-transform:uppercase; font-size:13px; letter-spacing:1px; background:var(--panel);">LIVE CHAT</div>
+            <div style="padding:25px; border-bottom:1px solid var(--glass-border); font-size: 12px; font-weight: 900; letter-spacing: 2px; color: #555;">LIVE CHAT</div>
             <div id="messages"></div>
-            <div style="padding:20px; border-top:1px solid var(--brd); display:flex; gap:10px; background:var(--panel);">
-                <input type="text" id="chat-input" placeholder="Say something..." class="aesthetic-input" style="margin:0;" onkeypress="if(event.key==='Enter') sendChat()">
-                <button class="aesthetic-btn primary-btn" style="width:60px; margin:0;" onclick="sendChat()">></button>
+            <div style="padding:20px; border-top:1px solid var(--glass-border);">
+                <input type="text" id="chat-input" placeholder="Message..." class="aesthetic-input" style="margin:0; text-align:left;" onkeypress="if(event.key==='Enter') sendChat()">
             </div>
         </div>
     </div>
 
     <script>
-        const API_KEY = 'AIzaSyAaCRqzXizB5wt8iFc7O-yfFvherdJi_-I'; // <--- APNI KEY DAALNA MAT BHOOLNA
+        const API_KEY = 'AIzaSyAaCRqzXizB5wt8iFc7O-yfFvherdJi_-I'; // <--- APNI KEY DALO BHAI
         let peer, connections = [];
-        let isHost = false;
-        let myName = "";
+        let isHost = false, myName = "";
 
         function initPeer(hostMode) {
             myName = document.getElementById('user-name').value.trim();
-            if(!myName) return alert("Bhai nickname toh daalo!");
-
+            if(!myName) return alert("Pehle naam toh batao!");
+            
             isHost = hostMode;
-            // Short ID Logic (5 chars)
             const shortId = isHost ? Math.random().toString(36).substring(2, 7) : null;
             peer = new Peer(shortId);
 
             peer.on('open', (id) => {
-                document.getElementById('room-id-tag').innerText = "ROOM ID: " + id;
-                if(!isHost) {
-                    let target = document.getElementById('join-input').value.trim();
-                    connectToHost(target);
-                }
+                document.getElementById('room-id-badge').innerText = "ROOM ID: " + id;
+                if(!isHost) connectToHost(document.getElementById('join-input').value.trim());
                 showApp();
             });
 
@@ -159,83 +137,71 @@
 
         function setupListeners(conn) {
             conn.on('open', () => {
-                addMsg("System", "Vibe Connected!", true);
-                // System notification to everyone
-                conn.send({type: 'system', val: myName + " joined the vibe!"});
+                addMsg("System", "New person joined the vibe!");
+                conn.send({type: 'system', val: myName + " joined!"});
             });
-
             conn.on('data', (data) => {
-                if(data.type === 'chat') {
-                    addMsg(data.user, data.val);
-                    if(isHost) broadcast(data, conn);
-                }
-                if(data.type === 'play') {
-                    updatePlayer(data.val);
-                    if(isHost) broadcast(data, conn);
-                }
-                if(data.type === 'system') {
-                    addMsg("System", data.val, true);
-                    if(isHost) broadcast(data, conn);
-                }
+                if(data.type === 'chat') { addMsg(data.user, data.val); if(isHost) broadcast(data, conn); }
+                if(data.type === 'play') { updatePlayer(data.val); if(isHost) broadcast(data, conn); }
+                if(data.type === 'system') { addMsg("System", data.val); if(isHost) broadcast(data, conn); }
             });
         }
 
-        function broadcast(data, excludeConn) {
-            connections.forEach(c => { if(c.open && c !== excludeConn) c.send(data); });
-        }
+        function broadcast(data, exclude) { connections.forEach(c => { if(c.open && c !== exclude) c.send(data); }); }
 
         function showApp() {
-            document.getElementById('entry-page').style.opacity = '0';
+            const ep = document.getElementById('entry-page');
+            const ma = document.getElementById('main-app');
+            ep.style.transform = "translateY(-100%)";
             setTimeout(() => {
-                document.getElementById('entry-page').style.display = 'none';
-                document.getElementById('main-app').style.display = 'grid';
-            }, 500); // Wait for fade-out
+                ep.style.display = "none";
+                ma.style.display = "grid";
+                setTimeout(() => ma.style.opacity = "1", 50);
+            }, 800);
         }
 
         async function handlePlay(isLocal) {
             let q = document.getElementById('search-input').value;
-            if(!q) return;
-
-            let vidId = "";
-            if(q.includes("v=")) vidId = q.split("v=")[1].split("&")[0];
-            else {
-                try {
-                    const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${encodeURIComponent(q)}&key=${API_KEY}`);
-                    const data = await res.json();
-                    if(data.items.length > 0) vidId = data.items[0].id.videoId;
-                } catch(e) { console.error(e); }
+            let vidId = q.includes("v=") ? q.split("v=")[1].split("&")[0] : "";
+            if(!vidId && q) {
+                const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${encodeURIComponent(q)}&key=${API_KEY}`);
+                const data = await res.json();
+                if(data.items.length > 0) vidId = data.items[0].id.videoId;
             }
-
             if(vidId) {
                 updatePlayer(vidId);
                 if(isLocal) {
-                    let payload = {type: 'play', val: vidId};
-                    isHost ? broadcast(payload) : connections[0].send(payload);
+                    let p = {type: 'play', val: vidId};
+                    isHost ? broadcast(p) : connections[0].send(p);
                 }
             }
             document.getElementById('search-input').value = "";
         }
 
-        function updatePlayer(id) {
-            document.getElementById('main-player').src = `https://www.youtube.com/embed/${id}?autoplay=1`;
-        }
+        function updatePlayer(id) { document.getElementById('main-player').src = `https://www.youtube.com/embed/${id}?autoplay=1`; }
 
         function sendChat() {
             let m = document.getElementById('chat-input').value;
             if(m) {
-                let payload = {type: 'chat', user: myName, val: m};
-                isHost ? broadcast(payload) : (connections[0] && connections[0].send(payload));
+                let p = {type: 'chat', user: myName, val: m};
+                isHost ? broadcast(p) : (connections[0] && connections[0].send(p));
                 addMsg("You", m);
                 document.getElementById('chat-input').value = "";
             }
         }
 
-        function addMsg(u, t, isSystem=false) {
+        function addMsg(u, t) {
             let b = document.getElementById('messages');
-            let style = isSystem ? "system-msg" : (u === "You" ? "you-msg" : "");
-            let label = isSystem ? `<i>Syncly Bot</i>` : (u === "You" ? `<b>You</b>` : `<b>${u}</b>`);
-            b.innerHTML += `<div class="msg ${style}">${label}: ${t}</div>`;
+            let cls = u === "System" ? "system-msg" : (u === "You" ? "my-msg" : "other-msg");
+            let content = u === "You" || u === "System" ? t : `<b>${u}</b><br>${t}`;
+            b.innerHTML += `<div class="msg ${cls}">${content}</div>`;
             b.scrollTop = b.scrollHeight;
+        }
+
+        function copyId() {
+            let id = document.getElementById('room-id-badge').innerText.split(': ')[1];
+            navigator.clipboard.writeText(id);
+            alert("ID Copied: " + id);
         }
     </script>
 </body>
