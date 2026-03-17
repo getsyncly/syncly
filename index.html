@@ -2,26 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Syncly | Pro Sync</title>
+    <title>Syncly | Super Sync</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root { --p: #1DB954; --bg: #0b0b0b; --panel: #121212; --brd: #282828; }
         body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; }
-        
-        /* Entrance Page */
         #entry-page { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; }
         .entry-card { background: var(--panel); padding: 30px; border-radius: 20px; border: 1px solid var(--brd); width: 320px; text-align: center; }
-        
-        /* Main App */
         #main-app { display: none; height: 100vh; display: grid; grid-template-columns: 3fr 1fr; }
         .player-side { padding: 20px; display: flex; flex-direction: column; gap: 15px; border-right: 1px solid var(--brd); }
         .chat-side { background: var(--panel); display: flex; flex-direction: column; }
-
-        /* Full Size Video */
         .video-container { flex: 1; width: 100%; position: relative; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid var(--brd); }
         #main-player { position: absolute; top:0; left:0; width: 100%; height: 100%; border: none; }
-
-        /* UI Elements */
         input { background: #1e1e1e; border: 1px solid var(--brd); padding: 12px; color: white; border-radius: 8px; outline: none; width: -webkit-fill-available; }
         .btn { background: var(--p); border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; color: black; }
         #messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
@@ -33,10 +25,10 @@
     <div id="entry-page">
         <h1 style="color:var(--p); font-size: 40px;">Syncly</h1>
         <div class="entry-card">
-            <button class="btn" style="width:100%" onclick="startRoom(true)">CREATE ROOM</button>
+            <button class="btn" style="width:100%" onclick="initPeer(true)">CREATE ROOM</button>
             <div style="margin: 20px 0; color: #555;">OR</div>
-            <input type="text" id="join-input" placeholder="Enter 4-Digit ID">
-            <button class="btn" style="width:100%; background:#333; color:white; margin-top:10px;" onclick="startRoom(false)">JOIN ROOM</button>
+            <input type="text" id="join-input" placeholder="Enter Friend's ID">
+            <button class="btn" style="width:100%; background:#333; color:white; margin-top:10px;" onclick="initPeer(false)">JOIN ROOM</button>
         </div>
     </div>
 
@@ -44,17 +36,16 @@
         <div class="player-side">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h2 style="color:var(--p); margin:0;">Syncly</h2>
-                <div id="room-id-tag" style="background:#1DB954; color:black; padding:4px 12px; border-radius:20px; font-weight:bold; font-size:14px;">ID: ...</div>
+                <div id="room-id-tag" style="background:var(--p); color:black; padding:4px 12px; border-radius:20px; font-weight:bold; font-size:14px;">ID: Connecting...</div>
             </div>
             <div style="display:flex; gap:10px;">
                 <input type="text" id="search-input" placeholder="Song name or link...">
-                <button class="btn" onclick="searchAndPlay()">PLAY</button>
+                <button class="btn" onclick="handlePlay(true)">PLAY</button>
             </div>
             <div class="video-container">
                 <iframe id="main-player" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
         </div>
-
         <div class="chat-side">
             <div style="padding:15px; border-bottom:1px solid var(--brd); font-weight:bold;">LIVE CHAT</div>
             <div id="messages"></div>
@@ -69,36 +60,40 @@
         const API_KEY = 'AIzaSyAaCRqzXizB5wt8iFc7O-yfFvherdJi_-I'; // <--- APNI KEY DAAL
         let peer, conn;
 
-        function startRoom(isHost) {
-            // Hum 4-digit ID simulate karne ke liye PeerID use karenge
-            // Note: PeerJS default IDs lambi deta hai, but Joiner host ki ID dalega
+        function initPeer(isHost) {
             peer = new Peer();
-            
             peer.on('open', (id) => {
                 if(isHost) {
-                    document.getElementById('room-id-tag').innerText = "ID: " + id.substring(0,5); 
-                    alert("Your Room ID is: " + id); // Copy this full ID for now
+                    document.getElementById('room-id-tag').innerText = "ID: " + id;
+                    alert("Copy this Room ID: " + id);
                     showApp();
                 } else {
                     let target = document.getElementById('join-input').value;
-                    conn = peer.connect(target);
-                    setupConnection();
-                    showApp();
+                    connectToPeer(target);
                 }
             });
-
             peer.on('connection', (c) => {
                 conn = c;
-                setupConnection();
+                setupListeners();
             });
         }
 
-        function setupConnection() {
+        function connectToPeer(targetId) {
+            conn = peer.connect(targetId, { reliable: true });
+            setupListeners();
+            showApp();
+        }
+
+        function setupListeners() {
+            conn.on('open', () => {
+                addMsg("System", "Vibe Connected!");
+                // Keep-alive heartbeat
+                setInterval(() => { if(conn.open) conn.send({type: 'ping'}); }, 5000);
+            });
             conn.on('data', (data) => {
                 if(data.type === 'chat') addMsg("Friend", data.val);
-                if(data.type === 'play') document.getElementById('main-player').src = `https://www.youtube.com/embed/${data.val}?autoplay=1`;
+                if(data.type === 'play') updatePlayer(data.val);
             });
-            addMsg("System", "Vibe Connected!");
         }
 
         function showApp() {
@@ -106,27 +101,28 @@
             document.getElementById('main-app').style.display = 'grid';
         }
 
-        async function searchAndPlay() {
+        async function handlePlay(isLocal) {
             let q = document.getElementById('search-input').value;
             let vidId = "";
-            
-            // Link Check
             if(q.includes("v=")) vidId = q.split("v=")[1].split("&")[0];
             else {
                 const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${encodeURIComponent(q)}&key=${API_KEY}`);
                 const data = await res.json();
                 vidId = data.items[0].id.videoId;
             }
-
             if(vidId) {
-                document.getElementById('main-player').src = `https://www.youtube.com/embed/${vidId}?autoplay=1`;
-                if(conn) conn.send({type: 'play', val: vidId});
+                updatePlayer(vidId);
+                if(isLocal && conn && conn.open) conn.send({type: 'play', val: vidId});
             }
+        }
+
+        function updatePlayer(id) {
+            document.getElementById('main-player').src = `https://www.youtube.com/embed/${id}?autoplay=1`;
         }
 
         function sendChat() {
             let m = document.getElementById('chat-input').value;
-            if(m && conn) {
+            if(m && conn && conn.open) {
                 conn.send({type: 'chat', val: m});
                 addMsg("You", m);
                 document.getElementById('chat-input').value = "";
